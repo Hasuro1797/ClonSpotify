@@ -1,23 +1,40 @@
-import logo from './logo.svg';
+import { useEffect } from 'react';
 import './App.css';
+import Login from './components/Login';
+import Player from './components/Player';
+import { getToken } from './spotifyLogic';
+import {setUser, addToken, addPlayList} from './redux/actions/index'
+import { useDispatch, useSelector } from 'react-redux';
+import SpotifyWebApi from 'spotify-web-api-js';
+
+const spotify = new SpotifyWebApi();
+
 
 function App() {
+
+  const token = useSelector(store => store.token)
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const hash = getToken();
+    const _token = hash.access_token;
+    if(_token){ 
+      dispatch(addToken(_token));
+      spotify.setAccessToken(_token);
+      spotify.getMe().then(user =>  dispatch(setUser(user)));
+      spotify.getPlaylist("1ShV0yPhoXSZ7uGJ5dAZF5").then(playlist => dispatch(addPlayList(playlist)));
+    }
+
+  }, [dispatch])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div >
+      {
+        token ? 
+        <Player/>
+          :
+        <Login/>
+      }
+      
     </div>
   );
 }
