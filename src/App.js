@@ -21,7 +21,8 @@ function App() {
     if(_token){ 
       dispatch(addToken(_token));
       spotify.setAccessToken(_token);
-      spotify.getMe().then(user =>  dispatch(setUser(user)));
+      spotify.getMe().then(user =>  dispatch(setUser(user))).catch(error=> console.log("el error es ",error));
+      spotify.getMySavedTracks().then(tracks => console.log("mis traxks son: ", tracks)).catch(err => console.error(err));
       spotify.getPlaylist("1ShV0yPhoXSZ7uGJ5dAZF5").then(playlist => dispatch(addPlayList(playlist)));
     }
 

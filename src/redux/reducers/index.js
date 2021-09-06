@@ -2,7 +2,7 @@ import { SET_USER, SET_TOKEN, ADD_PLAYLIST } from "../actions";
 const initialState = {
     user: {},
     token: "",
-    playlist:{}
+    playlist:null
 };
 
 const reducerSpotify = (state = initialState, action)=>{

@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import {BsSearch} from 'react-icons/bs';
 import { Avatar } from '@material-ui/core';
+import { useSelector } from 'react-redux';
 
 const HeaderContainer = styled.div`
     display: flex;
@@ -30,17 +31,21 @@ const HeaderRight = styled.div`
         margin-left: 15px;
     }
 `;
+const IconSearch = styled(BsSearch)`
+    margin-right: 10px;
+`;
 
 const Header = () => {
+    const user = useSelector(state => state.user)
     return (
         <HeaderContainer>
             <HeaderLeft>
-                <BsSearch/>
+                <IconSearch/>
                 <input type = "text" placeholder = "Search for Artists, Songs or other"/> 
             </HeaderLeft>
             <HeaderRight>
                 <Avatar/>
-                <h4>Benjamin1797</h4>
+                <h4>{user?.display_name}</h4>
             </HeaderRight>
         </HeaderContainer>
     )
