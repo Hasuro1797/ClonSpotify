@@ -1,8 +1,9 @@
-import { SET_USER, SET_TOKEN, ADD_PLAYLIST } from "../actions";
+import { SET_USER, SET_TOKEN, FETCH_PLAYLIST, GET_PLAYLIST } from "../actions";
 const initialState = {
     user: {},
     token: "",
-    playlist:null
+    list_playlist: {},
+    playlist: null
 };
 
 const reducerSpotify = (state = initialState, action)=>{
@@ -17,7 +18,12 @@ const reducerSpotify = (state = initialState, action)=>{
                 ...state,
                 token: action.payload
             }
-        case ADD_PLAYLIST:
+        case GET_PLAYLIST:
+            return {
+                ...state,
+                list_playlist: action.payload
+            }
+        case FETCH_PLAYLIST:
             return {
                 ...state,
                 playlist: action.payload

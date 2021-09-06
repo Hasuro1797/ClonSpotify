@@ -5,6 +5,7 @@ import {AiFillHome} from 'react-icons/ai';
 import {BsSearch} from 'react-icons/bs'
 import {VscLibrary} from 'react-icons/vsc'
 import SideBarChoice from './SideBarChoice';
+import { useSelector } from 'react-redux';
 
 const SideBarContainer = styled.div`
     background: #000;
@@ -29,7 +30,8 @@ const PlayList = styled.div`
 `;
 
 const SideBar = () => {
-    return (
+    const playlist = useSelector(store => store.list_playlist)
+    return playlist.items ?(
         <SideBarContainer>
             <img src = {LogoSpotify} alt = "logo" />
             <SideBarChoice title = "Home" Icon={AiFillHome}/>
@@ -40,12 +42,19 @@ const SideBar = () => {
                 PLAYLISTS
             </PlayList>
             <hr/>
-            <SideBarChoice title = "New Boots" />
-            <SideBarChoice title = "Your Library"/>
-            <SideBarChoice title = "English music"/>
+            {
+                playlist?.items.map((item, index) =>(
+                    <SideBarChoice 
+                        key = {index} 
+                        title = {item?.name}
+                        idPlaylist = {item.id}
+                        />
+                ))
+            }
 
         </SideBarContainer>
-    )
+    ): 
+    <p>No hay playlist disponible</p>
 }
 
 export default SideBar

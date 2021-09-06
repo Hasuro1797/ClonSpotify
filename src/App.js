@@ -3,7 +3,7 @@ import './App.css';
 import Login from './components/Login';
 import Player from './components/Player';
 import { getToken } from './spotifyLogic';
-import {setUser, addToken, addPlayList} from './redux/actions/index'
+import {setUser, addToken, getPlaylist} from './redux/actions/index'
 import { useDispatch, useSelector } from 'react-redux';
 import SpotifyWebApi from 'spotify-web-api-js';
 
@@ -12,7 +12,8 @@ const spotify = new SpotifyWebApi();
 
 function App() {
 
-  const token = useSelector(store => store.token)
+  const token = useSelector(store => store.token);
+  const user = useSelector(store => store.user);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -20,13 +21,24 @@ function App() {
     const _token = hash.access_token;
     if(_token){ 
       dispatch(addToken(_token));
-      spotify.setAccessToken(_token);
-      spotify.getMe().then(user =>  dispatch(setUser(user))).catch(error=> console.log("el error es ",error));
-      spotify.getMySavedTracks().then(tracks => console.log("mis traxks son: ", tracks)).catch(err => console.error(err));
-      spotify.getPlaylist("1ShV0yPhoXSZ7uGJ5dAZF5").then(playlist => dispatch(addPlayList(playlist)));
+      const spotifyInfo = async() =>{
+        try {
+          await spotify.setAccessToken(_token);
+          const myprofile = await spotify.getMe();
+          dispatch(setUser(myprofile));
+          // const myTracks = await spotify.getMySavedTracks();
+          // console.log("loso trakcs son ", myTracks);
+          const playlistUser = await spotify.getUserPlaylists(user.id);
+          dispatch(getPlaylist(playlistUser))
+        } catch (error) {
+          console.log("el erroe es ",error) 
+          //spotify.getMySavedTracks().then(tracks => console.log("mis traxks son: ", tracks)).catch(err => console.error(err));
+        }
+      }
+      spotifyInfo();
     }
 
-  }, [dispatch])
+  }, [dispatch, user.id])
   return (
     <div >
       {
